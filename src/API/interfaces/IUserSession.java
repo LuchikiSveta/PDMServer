@@ -1,0 +1,7 @@
+package API.interfaces;
+
+public interface IUserSession {
+	
+	IDBObjectCollection getObjectCollection(int objectType);
+
+}
