@@ -2,12 +2,15 @@ package main;
 
 import java.util.List;
 
+import API.AttributeTypeProperties;
 import API.UserSession;
+import API.interfaces.IDBAttributeTypeCollection;
 import API.interfaces.IDBObjectCollection;
 import API.interfaces.IUserSession;
 import API.interfaces.MetaDataHelper;
 import API.kernel.search.ColumnDescriptor;
 import API.kernel.search.DBRecordSetParams;
+import main.GUI.AdminWindow;
 import main.GUI.LoginWindow;
 
 public class Main {
@@ -38,15 +41,7 @@ public class Main {
 		
 		LoginWindow dialog = new LoginWindow();
 		
-		new MetaDataHelper();
-		
-		List<Integer> types = MetaDataHelper.getObjectTypeChildrenID(0);
-		
-		for (Integer row : types) {
-			
-			System.out.println(row);
-			
-		}
+		new AdminWindow(dialog.session);
 		
 	}
 

@@ -15,6 +15,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JLabel;
 
 import API.UserSession;
+import API.interfaces.IUserSession;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -32,7 +33,10 @@ public class LoginWindow extends JDialog {
 	private JPasswordField passwordField;
 	private JLabel lblNewLabel;
 	
+	public IUserSession session;
+	
 	public LoginWindow() throws InstantiationException{
+		setModal(true);
 		setTitle("Вход");
 		setResizable(false);
 		setBounds(100, 100, 282, 178);
@@ -92,7 +96,7 @@ public class LoginWindow extends JDialog {
 						
 						try {
 							
-							new UserSession(loginField.getText(), new String(passwordField.getPassword()));
+							session = new UserSession(loginField.getText(), new String(passwordField.getPassword()));
 							
 							dispose();
 							

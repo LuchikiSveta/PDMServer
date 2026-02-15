@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import API.interfaces.IDBAttributeTypeCollection;
 import API.interfaces.IDBObjectCollection;
 import API.interfaces.IUserSession;
 import API.interfaces.MetaDataHelper;
@@ -51,6 +52,12 @@ public class UserSession implements IUserSession{
 	
 	public IDBObjectCollection getObjectCollection(int objectType) {
 		return new DBObjectCollection(objectType);
+	}
+
+	public IDBAttributeTypeCollection getAttributeTypeCollection() {
+		
+		return new DBAttributeTypeCollection();
+		
 	}
 
 }
