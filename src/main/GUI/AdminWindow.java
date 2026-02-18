@@ -41,8 +41,8 @@ public class AdminWindow extends JFrame {
 	private JPanel contentPane;
 	private JTable table;
 	
-	private JButton btnNewButton = new JButton("Отменить");
-	private JButton btnNewButton_1 = new JButton("Применить");
+	private JButton btnCancel = new JButton("Отменить");
+	private JButton btnConfirm = new JButton("Применить");
 	
 	private JList<AttributeTypeProperties> list = new JList<>();
 	
@@ -62,8 +62,8 @@ public class AdminWindow extends JFrame {
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		contentPane.add(tabbedPane, BorderLayout.CENTER);
 		
-		JSplitPane splitPane = new JSplitPane();
-		tabbedPane.addTab("Атрибуты", null, splitPane, null);
+		JSplitPane attrsSplitPane = new JSplitPane();
+		tabbedPane.addTab("Атрибуты", null, attrsSplitPane, null);
 		
 		table = new JTable();
 		
@@ -71,34 +71,34 @@ public class AdminWindow extends JFrame {
 		
 		List<AttributeTypeProperties> attrs = coll.select();
 		
-		JPanel panel = new JPanel();
-		splitPane.setRightComponent(panel);
-		SpringLayout sl_panel = new SpringLayout();
-		panel.setLayout(sl_panel);
+		JPanel attrTablePanel = new JPanel();
+		attrsSplitPane.setRightComponent(attrTablePanel);
+		SpringLayout sl_attrTablePanel = new SpringLayout();
+		attrTablePanel.setLayout(sl_attrTablePanel);
 		
-		JScrollPane scrollPane = new JScrollPane();
-		sl_panel.putConstraint(SpringLayout.WEST, scrollPane, 0, SpringLayout.WEST, panel);
-		sl_panel.putConstraint(SpringLayout.NORTH, scrollPane, 0, SpringLayout.NORTH, panel);
-		panel.add(scrollPane);
+		JScrollPane attrTableScrollPane = new JScrollPane();
+		sl_attrTablePanel.putConstraint(SpringLayout.WEST, attrTableScrollPane, 0, SpringLayout.WEST, attrTablePanel);
+		sl_attrTablePanel.putConstraint(SpringLayout.NORTH, attrTableScrollPane, 0, SpringLayout.NORTH, attrTablePanel);
+		attrTablePanel.add(attrTableScrollPane);
 		
 		
-		btnNewButton.setEnabled(false);
-		sl_panel.putConstraint(SpringLayout.SOUTH, scrollPane, -6, SpringLayout.NORTH, btnNewButton);
-		sl_panel.putConstraint(SpringLayout.EAST, scrollPane, 8, SpringLayout.EAST, btnNewButton);
+		btnCancel.setEnabled(false);
+		sl_attrTablePanel.putConstraint(SpringLayout.SOUTH, attrTableScrollPane, -6, SpringLayout.NORTH, btnCancel);
+		sl_attrTablePanel.putConstraint(SpringLayout.EAST, attrTableScrollPane, 8, SpringLayout.EAST, btnCancel);
 		
 		//table.getColumnModel().getColumn(1).setPreferredWidth(250);
-		scrollPane.setViewportView(table);
-		sl_panel.putConstraint(SpringLayout.SOUTH, btnNewButton, -10, SpringLayout.SOUTH, panel);
-		sl_panel.putConstraint(SpringLayout.EAST, btnNewButton, -10, SpringLayout.EAST, panel);
-		panel.add(btnNewButton);
+		attrTableScrollPane.setViewportView(table);
+		sl_attrTablePanel.putConstraint(SpringLayout.SOUTH, btnCancel, -10, SpringLayout.SOUTH, attrTablePanel);
+		sl_attrTablePanel.putConstraint(SpringLayout.EAST, btnCancel, -10, SpringLayout.EAST, attrTablePanel);
+		attrTablePanel.add(btnCancel);
 		
-		btnNewButton_1.setEnabled(false);
-		sl_panel.putConstraint(SpringLayout.SOUTH, btnNewButton_1, 0, SpringLayout.SOUTH, btnNewButton);
-		sl_panel.putConstraint(SpringLayout.EAST, btnNewButton_1, -6, SpringLayout.WEST, btnNewButton);
-		panel.add(btnNewButton_1);
+		btnConfirm.setEnabled(false);
+		sl_attrTablePanel.putConstraint(SpringLayout.SOUTH, btnConfirm, 0, SpringLayout.SOUTH, btnCancel);
+		sl_attrTablePanel.putConstraint(SpringLayout.EAST, btnConfirm, -6, SpringLayout.WEST, btnCancel);
+		attrTablePanel.add(btnConfirm);
 		
-		JScrollPane scrollPane_1 = new JScrollPane();
-		splitPane.setLeftComponent(scrollPane_1);
+		JScrollPane attrListScrollPane = new JScrollPane();
+		attrsSplitPane.setLeftComponent(attrListScrollPane);
 		
 		list.addMouseListener(new MouseAdapter() {
 			
@@ -134,8 +134,8 @@ public class AdminWindow extends JFrame {
 							
 							setTable(attr);
 							
-							btnNewButton.setEnabled(true);
-							btnNewButton_1.setEnabled(true);
+							btnCancel.setEnabled(true);
+							btnConfirm.setEnabled(true);
 							
 							attrs.add(attr);
 							
@@ -173,18 +173,24 @@ public class AdminWindow extends JFrame {
 				return attrs.get(index);
 			}
 		});
-		scrollPane_1.setViewportView(list);
+		attrListScrollPane.setViewportView(list);
 		
-		splitPane.setAutoscrolls(true);
+		attrsSplitPane.setAutoscrolls(true);
 		
-		btnNewButton.addMouseListener(new MouseAdapter() {
+		JSplitPane objsSplitPane = new JSplitPane();
+		tabbedPane.addTab("Объекты", null, objsSplitPane, null);
+		
+		JSplitPane relSplitPane = new JSplitPane();
+		tabbedPane.addTab("Связи", null, relSplitPane, null);
+		
+		btnCancel.addMouseListener(new MouseAdapter() {
 			
 			public void mouseClicked(MouseEvent e) {
 				
-				if(btnNewButton.isEnabled() == false) return;
+				if(btnCancel.isEnabled() == false) return;
 				
-				btnNewButton.setEnabled(false);
-				btnNewButton_1.setEnabled(false);
+				btnCancel.setEnabled(false);
+				btnConfirm.setEnabled(false);
 				
 				editAttr = null;
 				list.setSelectedIndex(0);
@@ -194,11 +200,11 @@ public class AdminWindow extends JFrame {
 			
 		});
 		
-		btnNewButton_1.addMouseListener(new MouseAdapter() {
+		btnConfirm.addMouseListener(new MouseAdapter() {
 			
 			public void mouseClicked(MouseEvent e) {
 				
-				if(btnNewButton_1.isEnabled() == false) return;
+				if(btnConfirm.isEnabled() == false) return;
 				
 				TableCellEditor editor = table.getCellEditor();
 				
@@ -234,8 +240,8 @@ public class AdminWindow extends JFrame {
 						
 						setTable(editAttr);
 						
-						btnNewButton.setEnabled(false);
-						btnNewButton_1.setEnabled(false);
+						btnCancel.setEnabled(false);
+						btnConfirm.setEnabled(false);
 						
 						list.setSelectedValue(editAttr, true);
 						
@@ -255,8 +261,8 @@ public class AdminWindow extends JFrame {
 					
 					setTable(editAttr);
 					
-					btnNewButton.setEnabled(false);
-					btnNewButton_1.setEnabled(false);
+					btnCancel.setEnabled(false);
+					btnConfirm.setEnabled(false);
 					
 					list.setSelectedValue(editAttr, true);
 					
@@ -298,8 +304,8 @@ public class AdminWindow extends JFrame {
 
 			public void tableChanged(TableModelEvent e) {
 			     
-				btnNewButton.setEnabled(true);
-				btnNewButton_1.setEnabled(true);
+				btnCancel.setEnabled(true);
+				btnConfirm.setEnabled(true);
 				
 				editAttr = list.getSelectedValue();
 				  
