@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,9 +14,30 @@ public class DBAttributeTypeCollection implements IDBAttributeTypeCollection{
 
 	public int create(AttributeTypeProperties attrProperties) {
 		
+		try(Connection conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/storage", "root", "82548391")){
+			
+			String SQL = "INSERT INTO storage.attribute_types (attribute_type_name, attribute_type_value) VALUES (?, ?);";
+			
+			PreparedStatement statment = conn.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
+			
+			statment.setString(1, attrProperties.attributeName);
+			statment.setInt(2, attrProperties.valueAttributeType);
+			
+			statment.executeUpdate();
+			
+			ResultSet result = statment.getGeneratedKeys();
+			
+			result.next();
+			
+			return result.getInt(1);
+			
 		
-		
-		return 0;
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+			
+			return -1;
+		}
 	}
 
 	public List<AttributeTypeProperties> select() {

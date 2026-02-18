@@ -1,17 +1,17 @@
 package main.GUI;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.EventQueue;
-import java.util.EventObject;
 import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 
 import API.AttributeTypeProperties;
+import API.interfaces.IDBAttributeType;
 import API.interfaces.IDBAttributeTypeCollection;
 import API.interfaces.IUserSession;
 
@@ -22,6 +22,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JTable;
 import javax.swing.AbstractListModel;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
 import javax.swing.JScrollPane;
 import javax.swing.SpringLayout;
 import javax.swing.JButton;
@@ -39,6 +40,11 @@ public class AdminWindow extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTable table;
+	
+	private JButton btnNewButton = new JButton("Отменить");
+	private JButton btnNewButton_1 = new JButton("Применить");
+	
+	private JList<AttributeTypeProperties> list = new JList<>();
 	
 	AttributeTypeProperties editAttr = null;
 	
@@ -75,7 +81,7 @@ public class AdminWindow extends JFrame {
 		sl_panel.putConstraint(SpringLayout.NORTH, scrollPane, 0, SpringLayout.NORTH, panel);
 		panel.add(scrollPane);
 		
-		JButton btnNewButton = new JButton("Отменить");
+		
 		btnNewButton.setEnabled(false);
 		sl_panel.putConstraint(SpringLayout.SOUTH, scrollPane, -6, SpringLayout.NORTH, btnNewButton);
 		sl_panel.putConstraint(SpringLayout.EAST, scrollPane, 8, SpringLayout.EAST, btnNewButton);
@@ -86,7 +92,6 @@ public class AdminWindow extends JFrame {
 		sl_panel.putConstraint(SpringLayout.EAST, btnNewButton, -10, SpringLayout.EAST, panel);
 		panel.add(btnNewButton);
 		
-		JButton btnNewButton_1 = new JButton("Применить");
 		btnNewButton_1.setEnabled(false);
 		sl_panel.putConstraint(SpringLayout.SOUTH, btnNewButton_1, 0, SpringLayout.SOUTH, btnNewButton);
 		sl_panel.putConstraint(SpringLayout.EAST, btnNewButton_1, -6, SpringLayout.WEST, btnNewButton);
@@ -95,7 +100,6 @@ public class AdminWindow extends JFrame {
 		JScrollPane scrollPane_1 = new JScrollPane();
 		splitPane.setLeftComponent(scrollPane_1);
 		
-		JList<AttributeTypeProperties> list = new JList<>();
 		list.addMouseListener(new MouseAdapter() {
 			
 			public void mouseClicked(MouseEvent e) {
@@ -177,6 +181,8 @@ public class AdminWindow extends JFrame {
 			
 			public void mouseClicked(MouseEvent e) {
 				
+				if(btnNewButton.isEnabled() == false) return;
+				
 				btnNewButton.setEnabled(false);
 				btnNewButton_1.setEnabled(false);
 				
@@ -192,9 +198,69 @@ public class AdminWindow extends JFrame {
 			
 			public void mouseClicked(MouseEvent e) {
 				
-				if((int)table.getValueAt(0, 1) == -1) {
+				if(btnNewButton_1.isEnabled() == false) return;
+				
+				TableCellEditor editor = table.getCellEditor();
+				
+				if(editor != null)
+					editor.stopCellEditing();
+				
+				int id = (int)table.getValueAt(0, 1);
+				
+				if(id == -1) {
 					
-					System.out.println(table.getValueAt(1, 1));
+					editAttr.attributeName = (String) table.getValueAt(1, 1);
+					editAttr.valueAttributeType = Integer.parseInt(table.getValueAt(2, 1).toString());
+					
+					id = coll.create(editAttr);
+					
+					if(id == -1) {
+						
+						//---------------
+						
+					} else {
+						
+						editAttr.attributeTypeID = id;
+						
+						list.setModel(new AbstractListModel<AttributeTypeProperties>() {
+							
+							public int getSize() {
+								return attrs.size();
+							}
+							public AttributeTypeProperties getElementAt(int index) {
+								return attrs.get(index);
+							}
+						});
+						
+						setTable(editAttr);
+						
+						btnNewButton.setEnabled(false);
+						btnNewButton_1.setEnabled(false);
+						
+						list.setSelectedValue(editAttr, true);
+						
+						editAttr = null;
+						
+					}
+					
+				} else {
+					
+					editAttr.attributeName = (String) table.getValueAt(1, 1);
+					editAttr.valueAttributeType = Integer.parseInt(table.getValueAt(2, 1).toString());
+					
+					IDBAttributeType attrType = session.GetAttributeType(id);
+					
+					attrType.setName(editAttr.attributeName);
+					attrType.setAttributeType(editAttr.valueAttributeType);
+					
+					setTable(editAttr);
+					
+					btnNewButton.setEnabled(false);
+					btnNewButton_1.setEnabled(false);
+					
+					list.setSelectedValue(editAttr, true);
+					
+					editAttr = null;
 					
 				}
 				
@@ -215,7 +281,7 @@ public class AdminWindow extends JFrame {
 				{"Тип значения", attr.valueAttributeType},
 			},
 			new String[] {
-				"\u041F\u0430\u0440\u0430\u043C\u0435\u0442\u0440", "\u0417\u043D\u0430\u0447\u0435\u043D\u0438\u0435"
+				"Параметр", "Значение"
 			}
 		) {
 			
@@ -226,6 +292,18 @@ public class AdminWindow extends JFrame {
 				return true;
 		    }
 			
+		});
+		
+		table.getModel().addTableModelListener(new TableModelListener() {
+
+			public void tableChanged(TableModelEvent e) {
+			     
+				btnNewButton.setEnabled(true);
+				btnNewButton_1.setEnabled(true);
+				
+				editAttr = list.getSelectedValue();
+				  
+			}
 		});
 		
 	}

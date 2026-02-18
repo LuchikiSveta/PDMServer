@@ -2,7 +2,7 @@ package API;
 
 public class AttributeTypeProperties {
 	
-	public long attributeTypeID;
+	public int attributeTypeID;
 	
 	public String attributeName;
 	

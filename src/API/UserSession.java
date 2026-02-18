@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import API.interfaces.IDBAttributeType;
 import API.interfaces.IDBAttributeTypeCollection;
 import API.interfaces.IDBObjectCollection;
 import API.interfaces.IUserSession;
@@ -58,6 +59,11 @@ public class UserSession implements IUserSession{
 		
 		return new DBAttributeTypeCollection();
 		
+	}
+
+	public IDBAttributeType GetAttributeType(int attributeTypeID) {
+		
+		return new DBAttributeType(attributeTypeID);
 	}
 
 }
