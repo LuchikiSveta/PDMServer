@@ -6,6 +6,8 @@ public interface IUserSession {
 	
 	IDBAttributeTypeCollection getAttributeTypeCollection();
 	
-	IDBAttributeType GetAttributeType(int attributeTypeID);
+	IDBAttributeType getAttributeType(int attributeTypeID);
+	
+	IDBObjectTypeCollection getObjectTypeCollection (int parentTypeID);
 
 }

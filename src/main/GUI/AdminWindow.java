@@ -1,6 +1,7 @@
 package main.GUI;
 
 import java.awt.BorderLayout;
+import java.util.Enumeration;
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -9,10 +10,14 @@ import javax.swing.JPopupMenu;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.event.TreeExpansionEvent;
+import javax.swing.event.TreeExpansionListener;
 
 import API.AttributeTypeProperties;
+import API.ObjectTypeProperties;
 import API.interfaces.IDBAttributeType;
 import API.interfaces.IDBAttributeTypeCollection;
+import API.interfaces.IDBObjectTypeCollection;
 import API.interfaces.IUserSession;
 
 import javax.swing.JTabbedPane;
@@ -31,6 +36,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 public class AdminWindow extends JFrame {
 
@@ -48,10 +58,15 @@ public class AdminWindow extends JFrame {
 	
 	AttributeTypeProperties editAttr = null;
 	
+	IUserSession session;
+	
 	/**
 	 * Create the frame.
 	 */
 	public AdminWindow(IUserSession session) {
+		
+		this.session = session;
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 629, 300);
 		contentPane = new JPanel();
@@ -180,6 +195,9 @@ public class AdminWindow extends JFrame {
 		JSplitPane objsSplitPane = new JSplitPane();
 		tabbedPane.addTab("Объекты", null, objsSplitPane, null);
 		
+		JScrollPane scrollPane = new JScrollPane();
+		objsSplitPane.setLeftComponent(scrollPane);
+		
 		JSplitPane relSplitPane = new JSplitPane();
 		tabbedPane.addTab("Связи", null, relSplitPane, null);
 		
@@ -254,7 +272,7 @@ public class AdminWindow extends JFrame {
 					editAttr.attributeName = (String) table.getValueAt(1, 1);
 					editAttr.valueAttributeType = Integer.parseInt(table.getValueAt(2, 1).toString());
 					
-					IDBAttributeType attrType = session.GetAttributeType(id);
+					IDBAttributeType attrType = session.getAttributeType(id);
 					
 					attrType.setName(editAttr.attributeName);
 					attrType.setAttributeType(editAttr.valueAttributeType);
@@ -274,7 +292,61 @@ public class AdminWindow extends JFrame {
 			
 		});
 		
+		ObjectTypeProperties rootObj = new ObjectTypeProperties();
+		
+		rootObj.objectTypeID = 0;
+		rootObj.objectName = "Объекты";
+		
+		DefaultMutableTreeNode root = new DefaultMutableTreeNode(rootObj);
+		
+		root.add(new DefaultMutableTreeNode());
+		
+		DefaultTreeModel treeModel = new DefaultTreeModel(root);
+		
+		JTree tree = new JTree();
+		tree.setModel(treeModel);
+		
+		scrollPane.setViewportView(tree);
+		
+		tree.addTreeExpansionListener(new TreeExpansionListener() {
+			
+			public void treeExpanded(TreeExpansionEvent event) {
+				
+				DefaultMutableTreeNode lastNode = (DefaultMutableTreeNode) event.getPath().getLastPathComponent();
+				
+				addNodeTree(lastNode, treeModel);
+				
+			}
+			
+			public void treeCollapsed(TreeExpansionEvent event) { }
+			
+		});
+		
 		setVisible(true);
+		
+	}
+	
+	void addNodeTree(DefaultMutableTreeNode rootNode, DefaultTreeModel treeModel) {
+		
+		ObjectTypeProperties obj = (ObjectTypeProperties) rootNode.getUserObject();
+		
+		IDBObjectTypeCollection objCollection = session.getObjectTypeCollection(obj.objectTypeID);
+		
+		while(rootNode.getChildCount() > 0) {
+			rootNode.remove(0);
+		}
+		
+		for (ObjectTypeProperties prop : objCollection.select()) {
+			
+			DefaultMutableTreeNode node = new DefaultMutableTreeNode(prop);
+			
+			node.insert(new DefaultMutableTreeNode(), 0);
+			
+			rootNode.add(node);
+			
+		}
+		
+		treeModel.reload(rootNode);
 		
 	}
 	

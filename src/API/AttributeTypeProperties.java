@@ -8,7 +8,6 @@ public class AttributeTypeProperties {
 	
 	public int valueAttributeType;
 	
-	@Override
 	public String toString() {
 		return attributeName;
 	}
