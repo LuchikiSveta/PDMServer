@@ -8,6 +8,8 @@ public class ObjectTypeProperties {
 	
 	public String objectName;
 	
+	public String attributes;
+	
 	public String toString() {
 		return objectName;
 	}

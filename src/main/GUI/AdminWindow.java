@@ -40,6 +40,7 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 public class AdminWindow extends JFrame {
@@ -49,16 +50,23 @@ public class AdminWindow extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JTable table;
+	private JTable attrTable;
 	
 	private JButton btnCancel = new JButton("Отменить");
 	private JButton btnConfirm = new JButton("Применить");
 	
+	private JButton btnObjsCancel = new JButton("Отменить");
+	private JButton btnObjsConfirm = new JButton("Применить");
+	
 	private JList<AttributeTypeProperties> list = new JList<>();
 	
-	AttributeTypeProperties editAttr = null;
+	private AttributeTypeProperties editAttr = null;
+	
+	private TreePath editObj = null;
 	
 	IUserSession session;
+	private JTable objsTable;
+	private JTree objsTree;
 	
 	/**
 	 * Create the frame.
@@ -80,7 +88,7 @@ public class AdminWindow extends JFrame {
 		JSplitPane attrsSplitPane = new JSplitPane();
 		tabbedPane.addTab("Атрибуты", null, attrsSplitPane, null);
 		
-		table = new JTable();
+		attrTable = new JTable();
 		
 		IDBAttributeTypeCollection coll = session.getAttributeTypeCollection();
 		
@@ -94,15 +102,15 @@ public class AdminWindow extends JFrame {
 		JScrollPane attrTableScrollPane = new JScrollPane();
 		sl_attrTablePanel.putConstraint(SpringLayout.WEST, attrTableScrollPane, 0, SpringLayout.WEST, attrTablePanel);
 		sl_attrTablePanel.putConstraint(SpringLayout.NORTH, attrTableScrollPane, 0, SpringLayout.NORTH, attrTablePanel);
+		sl_attrTablePanel.putConstraint(SpringLayout.EAST, attrTableScrollPane, 10, SpringLayout.EAST, btnCancel);
 		attrTablePanel.add(attrTableScrollPane);
 		
 		
 		btnCancel.setEnabled(false);
 		sl_attrTablePanel.putConstraint(SpringLayout.SOUTH, attrTableScrollPane, -6, SpringLayout.NORTH, btnCancel);
-		sl_attrTablePanel.putConstraint(SpringLayout.EAST, attrTableScrollPane, 8, SpringLayout.EAST, btnCancel);
 		
 		//table.getColumnModel().getColumn(1).setPreferredWidth(250);
-		attrTableScrollPane.setViewportView(table);
+		attrTableScrollPane.setViewportView(attrTable);
 		sl_attrTablePanel.putConstraint(SpringLayout.SOUTH, btnCancel, -10, SpringLayout.SOUTH, attrTablePanel);
 		sl_attrTablePanel.putConstraint(SpringLayout.EAST, btnCancel, -10, SpringLayout.EAST, attrTablePanel);
 		attrTablePanel.add(btnCancel);
@@ -195,8 +203,8 @@ public class AdminWindow extends JFrame {
 		JSplitPane objsSplitPane = new JSplitPane();
 		tabbedPane.addTab("Объекты", null, objsSplitPane, null);
 		
-		JScrollPane scrollPane = new JScrollPane();
-		objsSplitPane.setLeftComponent(scrollPane);
+		JScrollPane objsScrollPane = new JScrollPane();
+		objsSplitPane.setLeftComponent(objsScrollPane);
 		
 		JSplitPane relSplitPane = new JSplitPane();
 		tabbedPane.addTab("Связи", null, relSplitPane, null);
@@ -224,17 +232,17 @@ public class AdminWindow extends JFrame {
 				
 				if(btnConfirm.isEnabled() == false) return;
 				
-				TableCellEditor editor = table.getCellEditor();
+				TableCellEditor editor = attrTable.getCellEditor();
 				
 				if(editor != null)
 					editor.stopCellEditing();
 				
-				int id = (int)table.getValueAt(0, 1);
+				int id = (int)attrTable.getValueAt(0, 1);
 				
 				if(id == -1) {
 					
-					editAttr.attributeName = (String) table.getValueAt(1, 1);
-					editAttr.valueAttributeType = Integer.parseInt(table.getValueAt(2, 1).toString());
+					editAttr.attributeName = (String) attrTable.getValueAt(1, 1);
+					editAttr.valueAttributeType = Integer.parseInt(attrTable.getValueAt(2, 1).toString());
 					
 					id = coll.create(editAttr);
 					
@@ -269,8 +277,8 @@ public class AdminWindow extends JFrame {
 					
 				} else {
 					
-					editAttr.attributeName = (String) table.getValueAt(1, 1);
-					editAttr.valueAttributeType = Integer.parseInt(table.getValueAt(2, 1).toString());
+					editAttr.attributeName = (String) attrTable.getValueAt(1, 1);
+					editAttr.valueAttributeType = Integer.parseInt(attrTable.getValueAt(2, 1).toString());
 					
 					IDBAttributeType attrType = session.getAttributeType(id);
 					
@@ -303,12 +311,40 @@ public class AdminWindow extends JFrame {
 		
 		DefaultTreeModel treeModel = new DefaultTreeModel(root);
 		
-		JTree tree = new JTree();
-		tree.setModel(treeModel);
+		objsTree = new JTree();
 		
-		scrollPane.setViewportView(tree);
+		objsTree.setModel(treeModel);
 		
-		tree.addTreeExpansionListener(new TreeExpansionListener() {
+		objsTree.collapseRow(0);
+		
+		objsScrollPane.setViewportView(objsTree);
+		
+		JPanel objsTalePanel = new JPanel();
+		objsSplitPane.setRightComponent(objsTalePanel);
+		SpringLayout sl_objsTalePanel = new SpringLayout();
+		sl_objsTalePanel.putConstraint(SpringLayout.NORTH, btnObjsConfirm, 0, SpringLayout.NORTH, btnObjsCancel);
+		sl_objsTalePanel.putConstraint(SpringLayout.EAST, btnObjsConfirm, -6, SpringLayout.WEST, btnObjsCancel);
+		sl_objsTalePanel.putConstraint(SpringLayout.EAST, btnObjsCancel, -10, SpringLayout.EAST, objsTalePanel);
+		objsTalePanel.setLayout(sl_objsTalePanel);
+		
+		JScrollPane objsTableScrollPane = new JScrollPane();
+		sl_objsTalePanel.putConstraint(SpringLayout.NORTH, btnObjsCancel, 6, SpringLayout.SOUTH, objsTableScrollPane);
+		sl_objsTalePanel.putConstraint(SpringLayout.NORTH, objsTableScrollPane, 0, SpringLayout.NORTH, objsTalePanel);
+		sl_objsTalePanel.putConstraint(SpringLayout.WEST, objsTableScrollPane, 0, SpringLayout.WEST, objsTalePanel);
+		sl_objsTalePanel.putConstraint(SpringLayout.SOUTH, objsTableScrollPane, -39, SpringLayout.SOUTH, objsTalePanel);
+		sl_objsTalePanel.putConstraint(SpringLayout.EAST, objsTableScrollPane, 0, SpringLayout.EAST, objsTalePanel);
+		objsTalePanel.add(objsTableScrollPane);
+		
+		objsTable = new JTable();
+		objsTableScrollPane.setViewportView(objsTable);
+		btnObjsConfirm.setEnabled(false);
+		objsTalePanel.add(btnObjsConfirm);
+		btnObjsCancel.setActionCommand("Отменить");
+		
+		btnObjsCancel.setEnabled(false);
+		objsTalePanel.add(btnObjsCancel);
+		
+		objsTree.addTreeExpansionListener(new TreeExpansionListener() {
 			
 			public void treeExpanded(TreeExpansionEvent event) {
 				
@@ -319,6 +355,177 @@ public class AdminWindow extends JFrame {
 			}
 			
 			public void treeCollapsed(TreeExpansionEvent event) { }
+			
+		});
+		
+		objsTree.addMouseListener(new MouseAdapter() {
+			
+			public void mouseClicked(MouseEvent e) {
+				
+				if(editObj != null) {
+					
+					objsTree.setSelectionPath(editObj);
+					
+					//editObj
+					
+					//objsTree.setSelectedValue(editAttr, true);
+					//objsTree.repaint();
+					return;
+					
+				}
+				
+				TreePath path = objsTree.getSelectionPath();
+				
+				if(path == null) return;
+				
+				ObjectTypeProperties obj = (ObjectTypeProperties) ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject();
+				
+				if(obj == null) return;
+				
+				if(e.getButton() == 3) {
+					
+					JPopupMenu menu = new JPopupMenu();
+					
+					JMenuItem addBtn = new JMenuItem("Добавить");
+					
+					menu.add(addBtn);
+					
+					addBtn.addActionListener(new ActionListener() {
+						
+						public void actionPerformed(ActionEvent e) {
+							
+							AttributeTypeProperties attr = new AttributeTypeProperties();
+							
+							attr.attributeTypeID = -1;
+							attr.attributeName = "";
+							attr.valueAttributeType = 1;
+							
+							setTable(attr);
+							
+							btnCancel.setEnabled(true);
+							btnConfirm.setEnabled(true);
+							
+							attrs.add(attr);
+							
+							list.setModel(new AbstractListModel<AttributeTypeProperties>() {
+								
+								public int getSize() {
+									return attrs.size();
+								}
+								public AttributeTypeProperties getElementAt(int index) {
+									return attrs.get(index);
+								}
+							});
+							
+							editAttr = attr;
+							
+						}
+					});
+					
+					menu.show(e.getComponent(), e.getX(), e.getY());
+					
+				} else {
+					
+					setTable(obj);
+					
+				}
+				
+			}
+			
+		});
+		
+		btnObjsCancel.addMouseListener(new MouseAdapter() {
+			
+			public void mouseClicked(MouseEvent e) {
+				
+				if(btnObjsCancel.isEnabled() == false) return;
+				
+				btnObjsCancel.setEnabled(false);
+				btnObjsConfirm.setEnabled(false);
+				
+				editObj = null;
+				//list.setSelectedIndex(0);
+				//setTable(list.getSelectedValue());
+				
+			}
+			
+		});
+		
+		btnObjsConfirm.addMouseListener(new MouseAdapter() {
+			
+			public void mouseClicked(MouseEvent e) {
+				
+				if(btnObjsConfirm.isEnabled() == false) return;
+				
+				TableCellEditor editor = objsTable.getCellEditor();
+				
+				if(editor != null)
+					editor.stopCellEditing();
+				
+				int id = (int)objsTable.getValueAt(0, 1);
+				
+				if(id == -1) {
+					
+					ObjectTypeProperties obj = (ObjectTypeProperties) ((DefaultMutableTreeNode) editObj.getLastPathComponent()).getUserObject();
+					
+					obj.objectName = (String) objsTable.getValueAt(1, 1);
+					obj.attributes = (String) objsTable.getValueAt(2, 1);
+					
+					//session
+					
+					//id = coll.create(editObj);
+					
+					if(id == -1) {
+						
+						//---------------
+						
+					} else {
+						
+						editAttr.attributeTypeID = id;
+						
+						list.setModel(new AbstractListModel<AttributeTypeProperties>() {
+							
+							public int getSize() {
+								return attrs.size();
+							}
+							public AttributeTypeProperties getElementAt(int index) {
+								return attrs.get(index);
+							}
+						});
+						
+						setTable(editAttr);
+						
+						btnCancel.setEnabled(false);
+						btnConfirm.setEnabled(false);
+						
+						list.setSelectedValue(editAttr, true);
+						
+						editAttr = null;
+						
+					}
+					
+				} else {
+					
+					editAttr.attributeName = (String) attrTable.getValueAt(1, 1);
+					editAttr.valueAttributeType = Integer.parseInt(attrTable.getValueAt(2, 1).toString());
+					
+					IDBAttributeType attrType = session.getAttributeType(id);
+					
+					attrType.setName(editAttr.attributeName);
+					attrType.setAttributeType(editAttr.valueAttributeType);
+					
+					setTable(editAttr);
+					
+					btnCancel.setEnabled(false);
+					btnConfirm.setEnabled(false);
+					
+					list.setSelectedValue(editAttr, true);
+					
+					editAttr = null;
+					
+				}
+				
+			}
 			
 		});
 		
@@ -352,7 +559,7 @@ public class AdminWindow extends JFrame {
 	
 	void setTable(AttributeTypeProperties attr) {
 		
-		table.setModel(new DefaultTableModel(
+		attrTable.setModel(new DefaultTableModel(
 			new Object[][] {
 				{"Идентификатор", attr.attributeTypeID},
 				{"Наименование", attr.attributeName},
@@ -372,7 +579,7 @@ public class AdminWindow extends JFrame {
 			
 		});
 		
-		table.getModel().addTableModelListener(new TableModelListener() {
+		attrTable.getModel().addTableModelListener(new TableModelListener() {
 
 			public void tableChanged(TableModelEvent e) {
 			     
@@ -380,6 +587,46 @@ public class AdminWindow extends JFrame {
 				btnConfirm.setEnabled(true);
 				
 				editAttr = list.getSelectedValue();
+				  
+			}
+		});
+		
+	}
+	
+	void setTable(ObjectTypeProperties attr) {
+		
+		objsTable.setModel(new DefaultTableModel(
+			new Object[][] {
+				{"Идентификатор", attr.objectTypeID},
+				{"Наименование", attr.objectName},
+				{"Атрибуты", ""},
+			},
+			new String[] {
+				"Параметр", "Значение"
+			}
+		) {
+			
+			public boolean isCellEditable(int row, int column) {
+		        
+				if(column == 0 || row == 0) return false;
+				
+				return true;
+		    }
+			
+		});
+		
+		objsTable.getModel().addTableModelListener(new TableModelListener() {
+
+			public void tableChanged(TableModelEvent e) {
+			     
+				btnObjsCancel.setEnabled(true);
+				btnObjsConfirm.setEnabled(true);
+				
+				TreePath path = objsTree.getSelectionPath();
+				
+				if(path == null) return;
+				
+				editObj = path;
 				  
 			}
 		});
