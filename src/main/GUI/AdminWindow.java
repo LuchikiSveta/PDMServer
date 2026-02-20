@@ -378,9 +378,9 @@ public class AdminWindow extends JFrame {
 				
 				if(path == null) return;
 				
-				ObjectTypeProperties obj = (ObjectTypeProperties) ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject();
+				ObjectTypeProperties parentObj = (ObjectTypeProperties) ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject();
 				
-				if(obj == null) return;
+				if(parentObj == null) return;
 				
 				if(e.getButton() == 3) {
 					
@@ -394,30 +394,25 @@ public class AdminWindow extends JFrame {
 						
 						public void actionPerformed(ActionEvent e) {
 							
-							AttributeTypeProperties attr = new AttributeTypeProperties();
+							ObjectTypeProperties obj = new ObjectTypeProperties();
 							
-							attr.attributeTypeID = -1;
-							attr.attributeName = "";
-							attr.valueAttributeType = 1;
+							obj.objectTypeID = -1;
+							obj.objectName = "";
+							obj.attributes = "";
+							obj.parentTypeID = parentObj.objectTypeID;
 							
-							setTable(attr);
+							setTable(obj);
 							
-							btnCancel.setEnabled(true);
-							btnConfirm.setEnabled(true);
+							btnObjsCancel.setEnabled(true);
+							btnObjsConfirm.setEnabled(true);
 							
-							attrs.add(attr);
+							DefaultMutableTreeNode node = new DefaultMutableTreeNode(obj);
 							
-							list.setModel(new AbstractListModel<AttributeTypeProperties>() {
-								
-								public int getSize() {
-									return attrs.size();
-								}
-								public AttributeTypeProperties getElementAt(int index) {
-									return attrs.get(index);
-								}
-							});
+							((DefaultMutableTreeNode) path.getLastPathComponent()).insert(node, 0);
 							
-							editAttr = attr;
+							treeModel.reload(((DefaultMutableTreeNode) path.getLastPathComponent()));
+							
+							editObj = path.pathByAddingChild(node);
 							
 						}
 					});
@@ -426,7 +421,7 @@ public class AdminWindow extends JFrame {
 					
 				} else {
 					
-					setTable(obj);
+					setTable(parentObj);
 					
 				}
 				
@@ -471,16 +466,18 @@ public class AdminWindow extends JFrame {
 					obj.objectName = (String) objsTable.getValueAt(1, 1);
 					obj.attributes = (String) objsTable.getValueAt(2, 1);
 					
-					//session
+					System.out.println(obj.objectTypeID + " " + obj.parentTypeID + " " + obj.objectName);
 					
-					//id = coll.create(editObj);
+					IDBObjectTypeCollection objCollection = session.getObjectTypeCollection(obj.parentTypeID);
+					
+					id = objCollection.create(obj);
 					
 					if(id == -1) {
 						
 						//---------------
 						
 					} else {
-						
+						/*
 						editAttr.attributeTypeID = id;
 						
 						list.setModel(new AbstractListModel<AttributeTypeProperties>() {
@@ -492,13 +489,13 @@ public class AdminWindow extends JFrame {
 								return attrs.get(index);
 							}
 						});
+						*/
+						//setTable(editAttr);
 						
-						setTable(editAttr);
+						//btnCancel.setEnabled(false);
+						//btnConfirm.setEnabled(false);
 						
-						btnCancel.setEnabled(false);
-						btnConfirm.setEnabled(false);
-						
-						list.setSelectedValue(editAttr, true);
+						//list.setSelectedValue(editAttr, true);
 						
 						editAttr = null;
 						
@@ -506,22 +503,24 @@ public class AdminWindow extends JFrame {
 					
 				} else {
 					
-					editAttr.attributeName = (String) attrTable.getValueAt(1, 1);
-					editAttr.valueAttributeType = Integer.parseInt(attrTable.getValueAt(2, 1).toString());
+					ObjectTypeProperties obj = (ObjectTypeProperties) ((DefaultMutableTreeNode) editObj.getLastPathComponent()).getUserObject();
 					
-					IDBAttributeType attrType = session.getAttributeType(id);
+					obj.objectName = (String) objsTable.getValueAt(1, 1);
+					obj.attributes = (String) objsTable.getValueAt(2, 1);
 					
-					attrType.setName(editAttr.attributeName);
-					attrType.setAttributeType(editAttr.valueAttributeType);
+					//IDBAttributeType attrType = session.getAttributeType(id);
 					
-					setTable(editAttr);
+					//attrType.setName(editAttr.attributeName);
+					//attrType.setAttributeType(editAttr.valueAttributeType);
 					
-					btnCancel.setEnabled(false);
-					btnConfirm.setEnabled(false);
+					//setTable(editObj);
 					
-					list.setSelectedValue(editAttr, true);
+					btnObjsCancel.setEnabled(false);
+					btnObjsConfirm.setEnabled(false);
 					
-					editAttr = null;
+					//list.setSelectedValue(editAttr, true);
+					
+					editObj = null;
 					
 				}
 				

@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,6 +49,35 @@ public class DBObjectTypeCollection implements IDBObjectTypeCollection {
 
 		return objectTypes;
 		
+	}
+
+	public int create(ObjectTypeProperties typeProperties) {
+		
+		try(Connection conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/storage", "root", "82548391")){
+			
+			String SQL = "INSERT INTO storage.object_types (description, attributes, parent_object_type) VALUES (?, ?, ?);";
+			
+			PreparedStatement statment = conn.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
+			
+			statment.setString(1, typeProperties.objectName);
+			statment.setString(2, typeProperties.attributes);
+			statment.setInt(3, typeProperties.parentTypeID);
+			
+			statment.executeUpdate();
+			
+			ResultSet result = statment.getGeneratedKeys();
+			
+			result.next();
+			
+			return result.getInt(1);
+			
+		
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+			
+			return -1;
+		}
 	}
 	
 }
