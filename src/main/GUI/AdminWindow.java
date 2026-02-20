@@ -209,6 +209,34 @@ public class AdminWindow extends JFrame {
 		JSplitPane relSplitPane = new JSplitPane();
 		tabbedPane.addTab("Связи", null, relSplitPane, null);
 		
+		JScrollPane scrollPane = new JScrollPane();
+		relSplitPane.setLeftComponent(scrollPane);
+		
+		JList list_1 = new JList();
+		scrollPane.setViewportView(list_1);
+		
+		JPanel panel = new JPanel();
+		relSplitPane.setRightComponent(panel);
+		SpringLayout sl_panel = new SpringLayout();
+		panel.setLayout(sl_panel);
+		
+		JScrollPane scrollPane_1 = new JScrollPane();
+		sl_panel.putConstraint(SpringLayout.NORTH, scrollPane_1, 0, SpringLayout.NORTH, panel);
+		sl_panel.putConstraint(SpringLayout.WEST, scrollPane_1, 0, SpringLayout.WEST, panel);
+		panel.add(scrollPane_1);
+		
+		JButton btnNewButton = new JButton("New button");
+		sl_panel.putConstraint(SpringLayout.SOUTH, scrollPane_1, -6, SpringLayout.NORTH, btnNewButton);
+		sl_panel.putConstraint(SpringLayout.EAST, scrollPane_1, 10, SpringLayout.EAST, btnNewButton);
+		sl_panel.putConstraint(SpringLayout.SOUTH, btnNewButton, -10, SpringLayout.SOUTH, panel);
+		sl_panel.putConstraint(SpringLayout.EAST, btnNewButton, -10, SpringLayout.EAST, panel);
+		panel.add(btnNewButton);
+		
+		JButton btnNewButton_1 = new JButton("New button");
+		sl_panel.putConstraint(SpringLayout.NORTH, btnNewButton_1, 0, SpringLayout.NORTH, btnNewButton);
+		sl_panel.putConstraint(SpringLayout.EAST, btnNewButton_1, -6, SpringLayout.WEST, btnNewButton);
+		panel.add(btnNewButton_1);
+		
 		btnCancel.addMouseListener(new MouseAdapter() {
 			
 			public void mouseClicked(MouseEvent e) {
@@ -631,5 +659,4 @@ public class AdminWindow extends JFrame {
 		});
 		
 	}
-	
 }
