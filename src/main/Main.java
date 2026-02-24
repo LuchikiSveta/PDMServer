@@ -10,6 +10,7 @@ import API.interfaces.IUserSession;
 import API.interfaces.MetaDataHelper;
 import API.kernel.search.ColumnDescriptor;
 import API.kernel.search.DBRecordSetParams;
+import API.navigator.SelectionWindow;
 import main.GUI.AdminWindow;
 import main.GUI.LoginWindow;
 
@@ -42,6 +43,8 @@ public class Main {
 		LoginWindow dialog = new LoginWindow();
 		
 		new AdminWindow(dialog.session);
+		
+		new SelectionWindow();
 		
 	}
 

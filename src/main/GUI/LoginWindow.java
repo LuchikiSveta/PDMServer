@@ -14,6 +14,7 @@ import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import javax.swing.JLabel;
 
+import API.SessionKeeper;
 import API.UserSession;
 import API.interfaces.IUserSession;
 
@@ -97,6 +98,8 @@ public class LoginWindow extends JDialog {
 						try {
 							
 							session = new UserSession(loginField.getText(), new String(passwordField.getPassword()));
+							
+							SessionKeeper.session = session;
 							
 							dispose();
 							
