@@ -24,7 +24,7 @@ public class DBObjectTypeCollection implements IDBObjectTypeCollection {
 		
 		try(Connection conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/storage", "root", "82548391")){
 			
-			String SQL = "SELECT type_id, description, parent_object_type FROM storage.object_types WHERE parent_object_type = ?;";
+			String SQL = "SELECT type_id, description, parent_object_type FROM storage.object_types WHERE parent_object_type = ? ORDER BY description;";
 			
 			PreparedStatement statment = conn.prepareStatement(SQL);
 			

@@ -4,9 +4,8 @@ import javax.swing.JFrame;
 import javax.swing.JSplitPane;
 import java.awt.BorderLayout;
 import javax.swing.JScrollPane;
-import javax.swing.JTree;
 
-import API.interfaces.IDBObject;
+import API.DBObjectType;
 
 public class SelectionWindow extends JFrame{
 	
@@ -18,7 +17,7 @@ public class SelectionWindow extends JFrame{
 		JScrollPane scrollPane = new JScrollPane();
 		splitPane.setLeftComponent(scrollPane);
 		
-		NavigatorTree tree = new NavigatorTree(new IDBObject() {});
+		NavigatorTree tree = new NavigatorTree(new DBObjectType(0));
 		scrollPane.setViewportView(tree);
 		
 		setSize(800, 500);

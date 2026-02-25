@@ -9,5 +9,7 @@ public interface IUserSession {
 	IDBAttributeType getAttributeType(int attributeTypeID);
 	
 	IDBObjectTypeCollection getObjectTypeCollection (int parentTypeID);
+	
+	IDBObjectType getObjectType(int TypeID);
 
 }
