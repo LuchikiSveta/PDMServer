@@ -10,6 +10,8 @@ public interface IUserSession {
 	
 	IDBObjectTypeCollection getObjectTypeCollection (int parentTypeID);
 	
-	IDBObjectType getObjectType(int TypeID);
+	IDBObjectType getObjectType(int typeID);
+	
+	IDBObject getObject(long objectVersionID);
 
 }

@@ -6,7 +6,7 @@ public class PDMBrowser implements IPDMBrowser {
 
 	public SessionKeeper getSessionKeeper() {
 		// TODO Auto-generated method stub
-		return null;
+		return new SessionKeeper();
 	}
 
 }

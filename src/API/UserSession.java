@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 
 import API.interfaces.IDBAttributeType;
 import API.interfaces.IDBAttributeTypeCollection;
+import API.interfaces.IDBObject;
 import API.interfaces.IDBObjectCollection;
 import API.interfaces.IDBObjectType;
 import API.interfaces.IDBObjectTypeCollection;
@@ -73,8 +74,12 @@ public class UserSession implements IUserSession{
 		return new DBObjectTypeCollection(parentTypeID);
 	}
 
-	public IDBObjectType getObjectType(int TypeID) {
-		return new DBObjectType(TypeID);
+	public IDBObjectType getObjectType(int typeID) {
+		return new DBObjectType(typeID);
+	}
+
+	public IDBObject getObject(long objectVersionID) {
+		return new DBObject(objectVersionID);
 	}
 
 }
