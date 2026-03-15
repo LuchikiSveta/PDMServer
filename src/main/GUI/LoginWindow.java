@@ -9,6 +9,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
@@ -100,6 +102,8 @@ public class LoginWindow extends JDialog {
 							session = new UserSession(loginField.getText(), new String(passwordField.getPassword()));
 							
 							SessionKeeper.session = session;
+							
+							SessionKeeper.SQLSession = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/storage", "root", "82548391");
 							
 							dispose();
 							

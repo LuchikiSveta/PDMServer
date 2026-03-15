@@ -14,7 +14,9 @@ public class DBAttributeTypeCollection implements IDBAttributeTypeCollection{
 
 	public int create(AttributeTypeProperties attrProperties) {
 		
-		try(Connection conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/storage", "root", "82548391")){
+		try{
+			
+			Connection conn = SessionKeeper.SQLSession;
 			
 			String SQL = "INSERT INTO storage.attribute_types (attribute_type_name, attribute_type_value) VALUES (?, ?);";
 			

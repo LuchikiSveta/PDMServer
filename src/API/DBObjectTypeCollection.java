@@ -22,7 +22,9 @@ public class DBObjectTypeCollection implements IDBObjectTypeCollection {
 		
 		List<ObjectTypeProperties> objectTypes = new ArrayList<ObjectTypeProperties>();
 		
-		try(Connection conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/storage", "root", "82548391")){
+		try {
+			
+			Connection conn = SessionKeeper.SQLSession;
 			
 			String SQL = "SELECT type_id, description, parent_object_type FROM storage.object_types WHERE parent_object_type = ? ORDER BY description;";
 			
@@ -53,7 +55,9 @@ public class DBObjectTypeCollection implements IDBObjectTypeCollection {
 
 	public int create(ObjectTypeProperties typeProperties) {
 		
-		try(Connection conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/storage", "root", "82548391")){
+		try {
+			
+			Connection conn = SessionKeeper.SQLSession;
 			
 			String SQL = "INSERT INTO storage.object_types (description, attributes, parent_object_type) VALUES (?, ?, ?);";
 			

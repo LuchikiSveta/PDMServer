@@ -1,14 +1,18 @@
 package API.navigator;
 
+import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 
 import API.ObjectTypeProperties;
 import API.SessionKeeper;
@@ -18,6 +22,10 @@ import API.interfaces.IDBObjectTypeCollection;
 
 public class NavigatorTree extends JTree{
 	
+	
+	/**
+	 * @wbp.parser.constructor
+	 */
 	public NavigatorTree(IDBObjectType type) {
 		
 		setModel(new DefaultTreeModel(new NavigatorTreeNode(type)));
@@ -28,18 +36,51 @@ public class NavigatorTree extends JTree{
 			
 			public void treeExpanded(TreeExpansionEvent event) {
 				
-				System.out.println(event.getPath().getLastPathComponent());
-				
 				((NavigatorTreeNode)event.getPath().getLastPathComponent()).loadChildTreeNode();
 				
 				((DefaultTreeModel)getModel()).reload(((NavigatorTreeNode)event.getPath().getLastPathComponent()));
 				
 			}
 			
-			public void treeCollapsed(TreeExpansionEvent event) {
-				// TODO Auto-generated method stub
+			public void treeCollapsed(TreeExpansionEvent event) {}
+		});
+		
+		JPopupMenu popupMenu = new JPopupMenu();
+		addPopup(this, popupMenu);
+		
+		JMenuItem mntmNewMenuItem = new JMenuItem("Создать");
+		mntmNewMenuItem.addMouseListener(new MouseAdapter() {
+			
+			public void mouseClicked(MouseEvent e) {
+				
+				TreePath path = getSelectionPath();
+				
+				if(path == null) return;
+				
+				NavigatorTreeNode node = ((NavigatorTreeNode) path.getLastPathComponent());
 				
 			}
+		});
+		popupMenu.add(mntmNewMenuItem);
+		
+	}
+	
+	public void addNavigatorNodeTreeListener(NavigatorNodeTreeListener listner){
+		
+		addMouseListener(new MouseAdapter() {
+			
+			public void mouseClicked(MouseEvent e) {
+				
+				TreePath path = getSelectionPath();
+				
+				if(path == null) return;
+				
+				NavigatorTreeNode node = ((NavigatorTreeNode) path.getLastPathComponent());
+				
+				listner.nodeSelect(new NavigatorNodeTreeEvent(node));
+				
+			}
+		
 		});
 		
 	}
@@ -51,6 +92,24 @@ public class NavigatorTree extends JTree{
 		collapseRow(0);
 		
 	}
+	
+	private static void addPopup(Component component, final JPopupMenu popup) {
+		component.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				if (e.isPopupTrigger()) {
+					showMenu(e);
+				}
+			}
+			public void mouseReleased(MouseEvent e) {
+				if (e.isPopupTrigger()) {
+					showMenu(e);
+				}
+			}
+			private void showMenu(MouseEvent e) {
+				popup.show(e.getComponent(), e.getX(), e.getY());
+			}
+		});
+	}
 
 }
 
@@ -60,8 +119,8 @@ class NavigatorTreeNode extends DefaultMutableTreeNode {
 	IDBObject object;
 	
 	NavigatorTreeNode(IDBObjectType type){
-		this.type = type;
 		super(type);
+		this.type = type;
 		insert(new DefaultMutableTreeNode(), 0);
 		
 		
@@ -69,8 +128,8 @@ class NavigatorTreeNode extends DefaultMutableTreeNode {
 	}
 	
 	NavigatorTreeNode(IDBObject object){
-		this.object = object;
 		super(object);
+		this.object = object;
 		insert(new DefaultMutableTreeNode(), 0);
 	}
 	

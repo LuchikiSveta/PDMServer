@@ -18,7 +18,9 @@ public class DBAttributeType implements IDBAttributeType {
 	
 	public void setName(String newName) {
 		
-		try(Connection conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/storage", "root", "82548391")){
+		try{
+			
+			Connection conn = SessionKeeper.SQLSession;
 			
 			String SQL = "UPDATE storage.attribute_types SET attribute_type_name = ? WHERE (attribute_type_id = ?);";
 			

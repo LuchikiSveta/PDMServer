@@ -22,7 +22,9 @@ public class DBObjectType implements IDBObjectType {
 	@Override
 	public String getObjectTypeName() {
 		
-		try(Connection conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/storage", "root", "82548391")){
+		try{
+			
+			Connection conn = SessionKeeper.SQLSession;
 			
 			String SQL = "SELECT description FROM storage.object_types WHERE (type_id = ?);";
 			

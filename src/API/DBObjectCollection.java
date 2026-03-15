@@ -9,14 +9,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import API.interfaces.IDBObjectCollection;
+import API.interfaces.MetaDataHelper;
 import API.kernel.search.ColumnDescriptor;
 import API.kernel.search.DBRecordSetParams;
 
 public class DBObjectCollection implements IDBObjectCollection {
 
-	long objectType = -1;
+	int objectType = -1;
 	
-	public DBObjectCollection(long objectType) {
+	public DBObjectCollection(int objectType) {
 		this.objectType = objectType;
 	}
 	
@@ -38,7 +39,18 @@ public class DBObjectCollection implements IDBObjectCollection {
 			        .toArray(String[]::new)
 			);
 		
-		Connection conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/storage", "root", "82548391");
+		List<Integer> list = MetaDataHelper.getObjectTypeChildrenID(objectType);
+		
+		list.add(objectType);
+		
+		String selectClause_3 = String.join(
+			    ", ",
+			    java.util.Arrays.stream(list.toArray())
+			        .map(attr -> "'" + ((int)attr) + "'")
+			        .toArray(String[]::new)
+			);
+		
+		Connection conn = SessionKeeper.SQLSession;
 		
 		String SQL =  "SELECT\r\n"
 					+ "    ov.version_id AS object_id,\r\n"
@@ -56,9 +68,10 @@ public class DBObjectCollection implements IDBObjectCollection {
 					+ "        FROM attributes a2\r\n"
 					+ "        JOIN attribute_types at2 ON a2.attribute_type_id = at2.attribute_type_id\r\n"
 					+ "        WHERE a2.object_version_id = ov.version_id\r\n"
-					+ "          AND (\r\n"
-					+ "              (at2.attribute_type_name = 'Отчество' AND a2.attribute_value = 'Вячеславович')\r\n"
-					+ "          )\r\n"
+					+ "          AND ov.type_id IN ("+selectClause_3+")\r\n"
+					//+ "          AND (\r\n"
+					//+ "              (ov.type_id = 1)\r\n"
+					//+ "          )\r\n"
 					+ "    )\r\n"
 					+ "    AND at.attribute_type_name IN (" + selectClause_2 + ")\r\n"
 					+ "GROUP BY\r\n"

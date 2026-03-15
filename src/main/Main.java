@@ -4,6 +4,7 @@ import java.util.List;
 
 import API.AttributeTypeProperties;
 import API.UserSession;
+import API.PDMBrowser.PDMBrowserConnector;
 import API.interfaces.IDBAttributeTypeCollection;
 import API.interfaces.IDBObjectCollection;
 import API.interfaces.IUserSession;
@@ -41,6 +42,8 @@ public class Main {
 		*/
 		
 		LoginWindow dialog = new LoginWindow();
+		
+		new PDMBrowserConnector().init();
 		
 		new AdminWindow(dialog.session);
 		
