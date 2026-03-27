@@ -7,5 +7,7 @@ import API.kernel.search.DBRecordSetParams;
 public interface IDBObjectCollection {
 	
 	public Object[][] select(DBRecordSetParams params) throws SQLException, Exception;
+	
+	public IDBObject create();
 
 }

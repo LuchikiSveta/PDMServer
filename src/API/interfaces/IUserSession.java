@@ -2,6 +2,8 @@ package API.interfaces;
 
 public interface IUserSession {
 	
+	long getUserID();
+	
 	IDBObjectCollection getObjectCollection(int objectType);
 	
 	IDBAttributeTypeCollection getAttributeTypeCollection();

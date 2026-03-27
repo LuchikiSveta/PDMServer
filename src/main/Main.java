@@ -3,6 +3,7 @@ package main;
 import java.util.List;
 
 import API.AttributeTypeProperties;
+import API.SessionKeeper;
 import API.UserSession;
 import API.PDMBrowser.PDMBrowserConnector;
 import API.interfaces.IDBAttributeTypeCollection;

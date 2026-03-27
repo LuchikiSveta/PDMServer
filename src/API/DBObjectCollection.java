@@ -8,6 +8,7 @@ import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import java.util.List;
 
+import API.interfaces.IDBObject;
 import API.interfaces.IDBObjectCollection;
 import API.interfaces.MetaDataHelper;
 import API.kernel.search.ColumnDescriptor;
@@ -101,4 +102,31 @@ public class DBObjectCollection implements IDBObjectCollection {
 	    
 	}
 
+	
+	public IDBObject create() {
+		
+		try {
+			
+			Connection conn = SessionKeeper.SQLSession;
+			
+			String SQL =  "SELECT storage.addObject(?, ?, 1000);";
+			
+			PreparedStatement statment = conn.prepareStatement(SQL);
+			
+			statment.setInt(1, objectType);
+			statment.setLong(2, SessionKeeper.getSession().getUserID());
+			
+			statment.execute();
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+
+		
+		
+		return null;
+	}
+
+	
+	
 }

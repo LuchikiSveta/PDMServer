@@ -18,6 +18,10 @@ public class UserSession implements IUserSession{
 
 	long userID = -1;
 	
+	public long getUserID() {
+		return userID;
+	}
+	
 	public UserSession(String login, String password) throws Exception {
 		
 		Connection conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/storage", "root", "82548391");
