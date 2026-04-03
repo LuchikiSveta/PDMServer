@@ -14,9 +14,14 @@ import API.kernel.search.DBRecordSetParams;
 import javax.swing.JScrollPane;
 import javax.swing.JPopupMenu;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
+import javax.swing.JFrame;
 import javax.swing.JMenuItem;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class NavigatorObjectBrowser extends JPanel {
 	private JTable table;
@@ -47,6 +52,18 @@ public class NavigatorObjectBrowser extends JPanel {
 		addPopup(table, popupMenu);
 		
 		JMenuItem mntmNewMenuItem = new JMenuItem("Карточка объекта");
+		mntmNewMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				long id = Long.parseLong(table.getModel().getValueAt(table.getSelectedRow(), 0).toString());
+				
+				JFrame frame = new JFrame();
+				frame.setSize(new Dimension(400, 300));
+				frame.add(new AttributeTable(id));
+				frame.setVisible(true);
+				
+			}
+		});
 		popupMenu.add(mntmNewMenuItem);
 		
 		JMenuItem mntmNewMenuItem_1 = new JMenuItem("Открыть");

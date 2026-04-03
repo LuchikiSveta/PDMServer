@@ -2,6 +2,8 @@ package main;
 
 import java.util.List;
 
+import javax.swing.JFrame;
+
 import API.AttributeTypeProperties;
 import API.SessionKeeper;
 import API.UserSession;
@@ -12,6 +14,7 @@ import API.interfaces.IUserSession;
 import API.interfaces.MetaDataHelper;
 import API.kernel.search.ColumnDescriptor;
 import API.kernel.search.DBRecordSetParams;
+import API.navigator.AttributeTable;
 import API.navigator.SelectionWindow;
 import main.GUI.AdminWindow;
 import main.GUI.LoginWindow;
@@ -41,6 +44,8 @@ public class Main {
             System.out.println();
         }
 		*/
+		
+		
 		
 		LoginWindow dialog = new LoginWindow();
 		

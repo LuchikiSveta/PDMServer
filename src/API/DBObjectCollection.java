@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -116,13 +117,15 @@ public class DBObjectCollection implements IDBObjectCollection {
 			statment.setInt(1, objectType);
 			statment.setLong(2, SessionKeeper.getSession().getUserID());
 			
-			statment.execute();
+			ResultSet result = statment.executeQuery();
+			
+			result.next();
+			
+			return new DBObject(result.getInt(1));
 			
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
-
-		
 		
 		return null;
 	}

@@ -18,8 +18,7 @@ public class DBObject implements IDBObject {
 
 	@Override
 	public IDBAttributeCollection getAttributeCollection() {
-		// TODO Auto-generated method stub
-		return null;
+		return new DBAttributeCollection(objectVersionID);
 	}
 
 	public long getCheckoutBy() {
