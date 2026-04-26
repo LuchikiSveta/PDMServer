@@ -8,5 +8,6 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="D:/Users/Maks/Downloads/mysql-connector-java-8.0.30.jar"/>
 	<classpathentry kind="lib" path="D:/Users/Maks/Downloads/py4j-0.10.9.7.jar"/>
+	<classpathentry kind="lib" path="D:/jython2.5.2/jython.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

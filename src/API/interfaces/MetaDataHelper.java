@@ -48,6 +48,17 @@ public class MetaDataHelper {
 		
 	}
 	
+	public static int getObjectTypeID(String name) {
+		
+		for (ObjectType objectType : objectTypes) {
+			if (objectType.objectTypeName.contentEquals(name))
+				return objectType.objectTypeID;
+		}
+		
+		return -1;
+		
+	}
+	
 	private static void findChildren(List<Integer> children, int parent) {
 		
 		for(ObjectType type : objectTypes) {

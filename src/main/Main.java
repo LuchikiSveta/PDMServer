@@ -1,8 +1,19 @@
 package main;
 
+import java.io.FileReader;
+import java.io.StringWriter;
 import java.util.List;
 
+import javax.script.Invocable;
+import javax.script.ScriptContext;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+import javax.script.SimpleScriptContext;
 import javax.swing.JFrame;
+
+import org.python.core.PyObject;
+import org.python.util.PythonInterpreter;
 
 import API.AttributeTypeProperties;
 import API.SessionKeeper;
@@ -20,7 +31,15 @@ import main.GUI.AdminWindow;
 import main.GUI.LoginWindow;
 
 public class Main {
+	
+	static ScriptEngineManager manager = new ScriptEngineManager();
+    static javax.script.ScriptEngine engine = manager.getEngineByName("python");
+    static Invocable invocable = (Invocable) engine;
 
+    private static Object load(IUserSession session) throws ScriptException, NoSuchMethodException{
+        return invocable.invokeFunction("load",session);
+    }
+    
 	public static void main(String[] args) throws Exception {
 		/*
 		IUserSession session = new UserSession("Maks", "1235");
@@ -45,15 +64,16 @@ public class Main {
         }
 		*/
 		
-		
-		
 		LoginWindow dialog = new LoginWindow();
 		
-		new PDMBrowserConnector().init();
+		engine.eval(new FileReader("D:\\test.py"));
+		load(dialog.session);
+		
+		/*new PDMBrowserConnector().init();
 		
 		new AdminWindow(dialog.session);
 		
-		new SelectionWindow();
+		new SelectionWindow();*/
 		
 	}
 
